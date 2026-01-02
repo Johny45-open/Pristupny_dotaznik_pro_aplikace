@@ -1,5 +1,6 @@
 import sys
 import json
+import accessible_output2.outputs.auto as ao2
 from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel,
                              QRadioButton, QPushButton, QButtonGroup)
 from PyQt6.QtCore import Qt
@@ -9,6 +10,9 @@ class Questionnaire(QWidget):
         super().__init__()
         self.setWindowTitle("Přístupný dotazník 1.0")
         self.setGeometry(200, 200, 500, 250)
+
+        # hlasový výstup
+        self.speaker = ao2.Auto()
 
         # Profil uživatele
         self.profile = {
@@ -55,6 +59,7 @@ class Questionnaire(QWidget):
     # ----------------- Otázky -----------------
     def ask_screen_reader(self):
         self.clear_layout()
+        self.speaker.speak("Jaký odečítač používáš?")
         label = QLabel("Jaký odečítač používáš?")
         self.main_layout.addWidget(label)
 
@@ -64,6 +69,7 @@ class Questionnaire(QWidget):
             btn = QRadioButton(opt)
             group.addButton(btn)
             self.main_layout.addWidget(btn)
+            self.speaker.speak(opt)  # hlasové přečtení možností
 
         next_btn = QPushButton("Další")
         next_btn.clicked.connect(lambda: self.save_screen_reader(group))
@@ -79,6 +85,7 @@ class Questionnaire(QWidget):
 
     def ask_magnification(self):
         self.clear_layout()
+        self.speaker.speak("Používáš zvětšení?")
         label = QLabel("Používáš zvětšení?")
         self.main_layout.addWidget(label)
 
@@ -89,6 +96,9 @@ class Questionnaire(QWidget):
         group.addButton(no)
         self.main_layout.addWidget(yes)
         self.main_layout.addWidget(no)
+
+        self.speaker.speak("Ano")
+        self.speaker.speak("Ne")
 
         next_btn = QPushButton("Další")
         next_btn.clicked.connect(lambda: self.save_magnification(group))
@@ -104,6 +114,7 @@ class Questionnaire(QWidget):
 
     def ask_speech(self):
         self.clear_layout()
+        self.speaker.speak("Používáš hlasový výstup?")
         label = QLabel("Používáš hlasový výstup?")
         self.main_layout.addWidget(label)
 
@@ -114,6 +125,9 @@ class Questionnaire(QWidget):
         group.addButton(no)
         self.main_layout.addWidget(yes)
         self.main_layout.addWidget(no)
+
+        self.speaker.speak("Ano")
+        self.speaker.speak("Ne")
 
         next_btn = QPushButton("Další")
         next_btn.clicked.connect(lambda: self.save_speech(group))
@@ -129,6 +143,7 @@ class Questionnaire(QWidget):
 
     def ask_verbosity(self):
         self.clear_layout()
+        self.speaker.speak("Jak moc má být aplikace ukecaná?")
         label = QLabel("Jak moc má být aplikace ukecaná?")
         self.main_layout.addWidget(label)
 
@@ -138,6 +153,7 @@ class Questionnaire(QWidget):
             btn = QRadioButton(opt)
             group.addButton(btn)
             self.main_layout.addWidget(btn)
+            self.speaker.speak(opt)
 
         next_btn = QPushButton("Další")
         next_btn.clicked.connect(lambda: self.save_verbosity(group))
@@ -153,7 +169,8 @@ class Questionnaire(QWidget):
 
     def ask_action_feedback(self):
         self.clear_layout()
-        label = QLabel("Chceš slyšet potvrzení akcí? (např. Uloženo, Hotovo)")
+        self.speaker.speak("Chceš slyšet potvrzení akcí?")
+        label = QLabel("Chceš slyšet potvrzení akcí?")
         self.main_layout.addWidget(label)
 
         group = QButtonGroup(self)
@@ -163,6 +180,9 @@ class Questionnaire(QWidget):
         group.addButton(no)
         self.main_layout.addWidget(yes)
         self.main_layout.addWidget(no)
+
+        self.speaker.speak("Ano")
+        self.speaker.speak("Ne")
 
         next_btn = QPushButton("Další")
         next_btn.clicked.connect(lambda: self.save_action_feedback(group))
@@ -178,6 +198,7 @@ class Questionnaire(QWidget):
 
     def ask_announce_shortcuts(self):
         self.clear_layout()
+        self.speaker.speak("Chceš, aby aplikace hlásila klávesové zkratky?")
         label = QLabel("Chceš, aby aplikace hlásila klávesové zkratky?")
         self.main_layout.addWidget(label)
 
@@ -188,6 +209,9 @@ class Questionnaire(QWidget):
         group.addButton(no)
         self.main_layout.addWidget(yes)
         self.main_layout.addWidget(no)
+
+        self.speaker.speak("Ano")
+        self.speaker.speak("Ne")
 
         next_btn = QPushButton("Další")
         next_btn.clicked.connect(lambda: self.save_announce_shortcuts(group))
@@ -203,6 +227,7 @@ class Questionnaire(QWidget):
 
     def ask_input_method(self):
         self.clear_layout()
+        self.speaker.speak("Jak ovládáš aplikace nejčastěji?")
         label = QLabel("Jak ovládáš aplikace nejčastěji? (může být víc možností)")
         self.main_layout.addWidget(label)
 
@@ -212,6 +237,7 @@ class Questionnaire(QWidget):
             btn = QRadioButton(opt)
             self.main_layout.addWidget(btn)
             self.input_buttons.append(btn)
+            self.speaker.speak(opt)
 
         next_btn = QPushButton("Další")
         next_btn.clicked.connect(self.save_input_method)
@@ -225,6 +251,7 @@ class Questionnaire(QWidget):
 
     def ask_text_size(self):
         self.clear_layout()
+        self.speaker.speak("Jak chceš zobrazovat text?")
         label = QLabel("Jak chceš zobrazovat text?")
         self.main_layout.addWidget(label)
 
@@ -234,6 +261,7 @@ class Questionnaire(QWidget):
             btn = QRadioButton(opt)
             group.addButton(btn)
             self.main_layout.addWidget(btn)
+            self.speaker.speak(opt)
 
         next_btn = QPushButton("Další")
         next_btn.clicked.connect(lambda: self.save_text_size(group))
@@ -249,6 +277,7 @@ class Questionnaire(QWidget):
 
     def ask_profile_scope(self):
         self.clear_layout()
+        self.speaker.speak("Má se tenhle profil uložit pro všechny aplikace nebo jen tuto?")
         label = QLabel("Má se tenhle profil uložit pro všechny aplikace nebo jen tuto?")
         self.main_layout.addWidget(label)
 
@@ -258,6 +287,7 @@ class Questionnaire(QWidget):
             btn = QRadioButton(opt)
             group.addButton(btn)
             self.main_layout.addWidget(btn)
+            self.speaker.speak(opt)
 
         next_btn = QPushButton("Dokončit")
         next_btn.clicked.connect(lambda: self.save_profile_scope(group))
@@ -277,6 +307,7 @@ class Questionnaire(QWidget):
             json.dump(self.profile, f, indent=4, ensure_ascii=False)
 
         self.clear_layout()
+        self.speaker.speak("Hotovo! Profil byl uložen.")
         label = QLabel("Hotovo! Profil byl uložen jako 'profile.json'.")
         self.main_layout.addWidget(label)
         self.show()
